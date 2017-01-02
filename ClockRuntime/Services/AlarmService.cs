@@ -22,8 +22,11 @@ namespace ClockRuntime.Services
 
             var minutesLeftToAlarm = (_currentAlarmDateTime.Value - DateTime.Now).TotalMinutes;
 
-            var newCyclePercentage = 0.0;
-            if (minutesLeftToAlarm < 60 && minutesLeftToAlarm > 0) newCyclePercentage = minutesLeftToAlarm / 60;
+            double newCyclePercentage;
+            if (minutesLeftToAlarm < 0) newCyclePercentage = 0.0;
+            else if(minutesLeftToAlarm < -60) newCyclePercentage = minutesLeftToAlarm / 60;
+            else if (minutesLeftToAlarm > 60) newCyclePercentage = 1.0;
+            else newCyclePercentage = minutesLeftToAlarm / 60;
 
             _gpioService.SetCyclePercentage(5, newCyclePercentage).Wait();
 

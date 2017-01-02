@@ -6,16 +6,19 @@ using System.Threading.Tasks;
 using ClockRuntime.Messaging;
 using MemBus;
 using Microsoft.Azure.Devices.Client;
+using Microsoft.Extensions.Logging; 
 
 namespace ClockRuntime.Services
 {
     internal class IotHubService : IDisposable
     {
+        private readonly ILogger _logger;
         private readonly DeviceClient _deviceClient;
 
-        public IotHubService(SettingsProvider settings)
+        public IotHubService(SettingsProvider settings, ILoggerFactory logger)
         {
-            _deviceClient = DeviceClient.Create(settings.IoTHubHostname, AuthenticationMethodFactory.CreateAuthenticationWithRegistrySymmetricKey(settings.IoTHubDeviceId, settings.IoTHubDeviceId), TransportType.Http1);
+            _logger = logger.CreateLogger<IotHubService>();
+            _deviceClient = DeviceClient.Create(settings.IoTHubHostname, AuthenticationMethodFactory.CreateAuthenticationWithRegistrySymmetricKey(settings.IoTHubDeviceId, settings.IoTHubDeviceKey), TransportType.Http1);
         }
 
         public async Task ReceiveAndPublishMessages(IBus bus, CancellationToken token)
@@ -40,8 +43,7 @@ namespace ClockRuntime.Services
                     }
                     catch (Exception ex)
                     {
-                        //todo
-                        Debug.WriteLine(ex.Message);
+                        _logger.LogError("Unhandled exception while parsing message / publishing message to bus. Message will be ignored", ex);
                     }
                     finally
                     {
@@ -50,7 +52,8 @@ namespace ClockRuntime.Services
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(ex.Message);
+                    _logger.LogError("Unhandled exception while receiving from IoT Hub, waiting for 5 seconds before retry...", ex);
+                    await Task.Delay(TimeSpan.FromSeconds(5), token);
                 }
             }
         }

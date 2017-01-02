@@ -113,6 +113,9 @@
       <SubType>Designer</SubType>
     </AppxManifest>
     <None Include="ClockRuntime_TemporaryKey.pfx" />
+    <Content Include="log4net.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
@@ -139,6 +142,9 @@
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
     <Content Include="MemBus.dll" />
     <Content Include="Properties\Default.rd.xml" />
+    <None Include="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MemBus, Version=3.0.1.0, Culture=neutral, processorArchitecture=MSIL">

@@ -20,7 +20,8 @@ namespace ClockRuntime
             });
             Container.RegisterSingleton<AlarmService>();
             Container.RegisterSingleton<GpioService>();
-            Container.RegisterSingleton<SettingsProvider>();
+            Container.RegisterSingleton<SettingsProvider>(); 
+            Container.RegisterSingleton<IotHubService>();
         }
 
         public void RegisterSingleton<T>(T o) where T : class
